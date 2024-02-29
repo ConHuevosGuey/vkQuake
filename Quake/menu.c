@@ -109,6 +109,7 @@ extern qboolean keydown[256];
 
 extern cvar_t scr_fov;
 extern cvar_t scr_showfps;
+extern cvar_t scr_showspeed;
 extern cvar_t scr_style;
 extern cvar_t autoload;
 extern cvar_t r_rtshadows;
@@ -1348,6 +1349,7 @@ enum
 	GAME_OPT_AUTOLOAD,
 	GAME_OPT_STARTUP_DEMOS,
 	GAME_OPT_SHOWFPS,
+	GAME_OPT_SHOWSPEED,
 	GAME_OPTIONS_ITEMS
 };
 
@@ -1451,6 +1453,9 @@ static void M_GameOptions_AdjustSliders (int dir, qboolean mouse)
 		break;
 	case GAME_OPT_SHOWFPS:
 		Cvar_SetValue ("scr_showfps", ((int)scr_showfps.value + 2 + dir) % 2);
+		break;
+	case GAME_OPT_SHOWSPEED:
+		Cvar_SetValue ("scr_showspeed", ((int)scr_showspeed.value + 2 + dir) % 2);
 		break;
 	}
 }
@@ -1596,6 +1601,10 @@ static void M_GameOptions_Draw (cb_context_t *cbx)
 		case GAME_OPT_SHOWFPS:
 			M_Print (cbx, MENU_LABEL_X, y, "Show FPS");
 			M_DrawCheckbox (cbx, MENU_VALUE_X, y, scr_showfps.value);
+			break;
+		case GAME_OPT_SHOWSPEED:
+			M_Print (cbx, MENU_LABEL_X, y, "Show Speed");
+			M_DrawCheckbox (cbx, MENU_VALUE_X, y, scr_showspeed.value);
 			break;
 		}
 	}

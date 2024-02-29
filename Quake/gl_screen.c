@@ -88,6 +88,7 @@ cvar_t scr_conwidth = {"scr_conwidth", "0", CVAR_ARCHIVE};
 cvar_t scr_conscale = {"scr_conscale", "1", CVAR_ARCHIVE};
 cvar_t scr_crosshairscale = {"scr_crosshairscale", "1", CVAR_ARCHIVE};
 cvar_t scr_showfps = {"scr_showfps", "0", CVAR_ARCHIVE};
+cvar_t scr_showspeed = {"scr_showspeed", "0", CVAR_ARCHIVE};
 cvar_t scr_clock = {"scr_clock", "0", CVAR_NONE};
 cvar_t scr_autoclock = {"scr_autoclock", "1", CVAR_ARCHIVE};
 cvar_t scr_usekfont = {"scr_usekfont", "0", CVAR_NONE}; // 2021 re-release
@@ -161,6 +162,7 @@ void SCR_CenterPrintClear (void)
 	scr_centertime_off = 0;
 	scr_clock_off = 0;
 }
+
 
 /*
 ==============
@@ -549,6 +551,7 @@ void SCR_Init (void)
 	Cvar_RegisterVariable (&scr_conscale);
 	Cvar_RegisterVariable (&scr_crosshairscale);
 	Cvar_RegisterVariable (&scr_showfps);
+	Cvar_RegisterVariable (&scr_showspeed);
 	Cvar_RegisterVariable (&scr_clock);
 	Cvar_RegisterVariable (&scr_autoclock);
 	// johnfitz
@@ -653,6 +656,32 @@ void SCR_DrawFPS (cb_context_t *cbx)
 
 /*
 ==============
+SCR_DrawSpeed 
+==============
+*/
+
+void SCR_DrawSpeed(cb_context_t* cbx)
+{
+	if (scr_showspeed.value && scr_viewsize.value < 130)
+	{
+		int	x, y;
+		char speedstring[32];
+		double speed, speedxy;
+		speed = VectorLength (cl.velocity);
+		speedxy = sqrt (cl.velocity[0] * cl.velocity[0] + cl.velocity[1] * cl.velocity[1]);
+		q_snprintf (speedstring, sizeof (speedstring), "%.0f (%.0f) %s", 1.0 * speed, 1.0 * speedxy, "qu/s");
+		x = 320 - (strlen (speedstring) << 3);
+		if (scr_showfps.value)  
+			y = 200 - 16; // Move the speedometer string above the FPS text if it's enabled
+		else
+			y = 200 - 8;
+		GL_SetCanvas (cbx, CANVAS_BOTTOMRIGHT);
+		Draw_String (cbx, x, y, speedstring);
+	}
+}
+
+/*
+==============
 SCR_DrawClock -- johnfitz
 ==============
 */
@@ -684,6 +713,8 @@ void SCR_DrawClock (cb_context_t *cbx)
 
 	if (scr_showfps.value)
 		y -= 8; // make room for fps counter
+	if (scr_showspeed.value)
+		y -= 8; // make room for speedometer
 
 	if (scr_clock.value >= 2)
 	{
@@ -1158,6 +1189,7 @@ static void SCR_DrawGUI (void *unused)
 		Sbar_Draw (cbx);
 		SCR_DrawDevStats (cbx); // johnfitz
 		SCR_DrawFPS (cbx);		// johnfitz
+		SCR_DrawSpeed (cbx);
 		SCR_DrawClock (cbx);	// johnfitz
 		SCR_DrawConsole (cbx);
 		M_Draw (cbx);

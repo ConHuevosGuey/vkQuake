@@ -1033,7 +1033,7 @@ void GL_SetCanvas (cb_context_t *cbx, canvastype newcanvas)
 		GL_OrthoMatrix (cbx, 0, 320, 200, 0, -99999, 99999);
 		GL_Viewport (cbx, 0, 0, 320 * s, 200 * s, 0.0f, 1.0f);
 		break;
-	case CANVAS_BOTTOMRIGHT:			   // used by fps/clock
+	case CANVAS_BOTTOMRIGHT:			   // used by fps/clock/speedometer
 		s = (float)glwidth / vid.conwidth; // use console scale
 		GL_OrthoMatrix (cbx, 0, 320, 200, 0, -99999, 99999);
 		GL_Viewport (cbx, glwidth - 320 * s, 0, 320 * s, 200 * s, 0.0f, 1.0f);
